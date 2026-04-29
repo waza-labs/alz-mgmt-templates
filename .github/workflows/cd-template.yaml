@@ -15,6 +15,13 @@ on:
         description: 'Terraform CLI Version'
         default: 'latest'
         type: string
+    secrets:
+      TF_VAR_VPN_SHARED_KEYS:
+        description: 'JSON map of vWAN VPN site connection PSKs, keyed by vpn_site_connections map key. Forwarded as TF_VAR_vpn_shared_keys.'
+        required: false
+      TF_VAR_ER_AUTHORIZATION_KEYS:
+        description: 'JSON map of ExpressRoute circuit authorization keys, keyed by express_route_circuit_connections map key. Forwarded as TF_VAR_er_authorization_keys.'
+        required: false
 
 jobs:
   plan:
@@ -32,6 +39,8 @@ jobs:
       ARM_TENANT_ID: "${{ vars.AZURE_TENANT_ID }}"
       ARM_USE_AZUREAD: true
       ARM_USE_OIDC: true
+      TF_VAR_vpn_shared_keys: "${{ secrets.TF_VAR_VPN_SHARED_KEYS }}"
+      TF_VAR_er_authorization_keys: "${{ secrets.TF_VAR_ER_AUTHORIZATION_KEYS }}"
 
     steps:
       - name: Checkout Code
@@ -107,6 +116,8 @@ jobs:
       ARM_USE_AZUREAD: true
       ARM_USE_OIDC: true
       AZAPI_RETRY_GET_AFTER_PUT_MAX_TIME: "60m" # Accounts for eventually consistent management group permissions propagation
+      TF_VAR_vpn_shared_keys: "${{ secrets.TF_VAR_VPN_SHARED_KEYS }}"
+      TF_VAR_er_authorization_keys: "${{ secrets.TF_VAR_ER_AUTHORIZATION_KEYS }}"
 
     steps:
       - name: Download a Build Artifact
